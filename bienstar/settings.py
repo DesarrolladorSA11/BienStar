@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'client',
     'administrator',
     'roles_and_permissions',
+    'identification_type',
 ]
 
 
