@@ -1,10 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import AdminUserViewSet
+from rest_framework.authtoken import views
 
 router = DefaultRouter()
-router.register(r'adminusers', AdminUserViewSet)
+router.register(r'', AdminUserViewSet)
 
 urlpatterns = [
-    path('api2/', include(router.urls)),
+    path('create/', include(router.urls)),
+    path('token/', views.obtain_auth_token),
 ]

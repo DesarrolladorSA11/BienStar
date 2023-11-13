@@ -1,8 +1,8 @@
-
+"""
 from django.urls import path
 from rest_framework import routers
 from client import views
-
+"""
 """
 #Routers
 router = routers.DefaultRouter()
@@ -15,9 +15,9 @@ urlpatterns = [
     path("Apiv1/", include(router.urls)),
 ]
 """
-
+"""
 from .views import ldap_authenticate
 
 urlpatterns = [
     path('api1/', ldap_authenticate, name='ldap_authenticate'),
-]
+]"""

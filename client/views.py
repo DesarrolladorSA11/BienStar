@@ -16,7 +16,7 @@ class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     
 """
-
+"""
 from ldap3 import Server, Connection, SIMPLE, SYNC, ALL, SUBTREE
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -49,3 +49,4 @@ def ldap_authenticate(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'Error LDAP: {e}'})
+"""
