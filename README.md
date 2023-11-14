@@ -1,8 +1,8 @@
 # BienStar
 
 ## VIRTUAL VENV
-create a virtual venv: python -m ven env 
-activate env: env\Scripts\activate
+# create a virtual venv: python -m ven env 
+# activate env: env\Scripts\activate
 
 ## Install requirementes.txt
 pip install -r requirements.txt
