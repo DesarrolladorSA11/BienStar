@@ -1,4 +1,5 @@
 from .models import AdminUser
+from users_generics.models import CustomUser
 from rest_framework import serializers
 
 class AdminUserSerializer(serializers.ModelSerializer):
@@ -23,11 +24,12 @@ class AdminUserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
-    
-"""
-class AdminUserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=255)
-    password = serializers.CharField(write_only=True)
-    
-"""
+# 
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            'id',
+            'name',
+            'identification_number',
+        )
