@@ -29,4 +29,4 @@ logout user_admin
 http://127.0.0.1:8000/api_administrator/logout/
 
 administration task - create_user
-http://127.0.0.1:8000/api_administrator/sigin/
+http://127.0.0.1:8000/api_administrator/createuser/
