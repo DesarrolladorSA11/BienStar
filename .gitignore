@@ -15,6 +15,3 @@ media/
 
 # Virtual environment
 env/
-
-# migrations
-migrations/

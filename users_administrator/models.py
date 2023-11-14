@@ -16,3 +16,5 @@ class AdminUser(CustomUser):
 
     def __str__(self):
         return '{0} {1}'.format(self.last_name, self.name)
+
+
