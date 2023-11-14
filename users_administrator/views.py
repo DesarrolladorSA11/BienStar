@@ -1,12 +1,8 @@
-from django.shortcuts import render
-
 from .models import AdminUser
-
 from .serializer import AdminUserSerializer #, AdminUserLoginSerializer
-
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -14,8 +10,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate
-
-
 
 
 # Create
@@ -29,7 +23,6 @@ class AdminUserViewSet(viewsets.ModelViewSet):
         if self.action in ['create']:
             return [AllowAny()]
         return super().get_permissions()
-
 
 
 

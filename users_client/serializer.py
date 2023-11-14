@@ -1,11 +1,11 @@
+from .models import ClientUser
 from rest_framework import serializers
-from .models import AdminUser
 
-class AdminUserSerializer(serializers.ModelSerializer):
+class ClientUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
     class Meta:
-        model = AdminUser
+        model = ClientUser
         fields = ['id', 'username', 'password', 'status', 'name', 'last_name', 'email', 'cellphone', 'identification_number', 'id_identification_type']
 
     def create(self, validated_data):
@@ -24,10 +24,22 @@ class AdminUserSerializer(serializers.ModelSerializer):
         return instance
 
 
-    
 """
-class AdminUserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=255)
-    password = serializers.CharField(write_only=True)
-    
+from rest_framework import serializers
+from .models import Profile, User
+"""
+"""
+#ProfileSerializer
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('id', 'status', 'name', 'last_name', 'email', 'cellphone', 'identification_number')
+
+
+#UserSeializer
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'password')
+
 """

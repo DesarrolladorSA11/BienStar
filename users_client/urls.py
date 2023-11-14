@@ -1,3 +1,17 @@
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import ClientUserViewSet
+from rest_framework.authtoken import views
+
+router = DefaultRouter()
+router.register(r'', ClientUserViewSet)
+
+urlpatterns = [
+    path('create/', include(router.urls)),
+    path('token/', views.obtain_auth_token),
+]
+
+
 """
 from django.urls import path
 from rest_framework import routers

@@ -58,10 +58,10 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     #Apps
-    'client',
-    'administrator',
-    'roles_and_permissions',
-    'identification_type',
+    'users_generics',
+    'users_client',
+    'users_administrator',
+    
 ]
 
 
@@ -180,7 +180,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'administrator.AdminUser'
+AUTH_USER_MODEL = 'users_generics.CustomUser'
+
 
 
 """
