@@ -43,6 +43,7 @@ class Id_type(models.Model):
 
     def __str__(self):
         return self.name
+    
 
 # USERS 
 class Users(models.Model):
