@@ -8,7 +8,6 @@ router.register(r'signup', AdminUserViewSet, basename='signup')
 router.register(r'createuser', CreateUserViewSet, basename='createuser')
 
 
-
 urlpatterns = [
     path('', include(router.urls)),
     
