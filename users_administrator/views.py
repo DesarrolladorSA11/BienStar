@@ -1,6 +1,8 @@
 from .models import AdminUser
 from users_generics.models import CustomUser, Users
 from .serializer import AdminUserSerializer, CustomUserSerializer, CreateUserSerializer
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
 
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
@@ -22,7 +24,27 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
 
+from rest_framework.authtoken.views import ObtainAuthToken
 
+# Token
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+
+        # Personaliza la respuesta JSON según tus necesidades
+        response_data = {
+            'success': True,
+            'message': 'Login successful',
+            'token': token.key,
+            'user_id': user.id,
+            'username': user.username,
+            # Agrega más datos según sea necesario
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 # Admin - Litar
@@ -49,30 +71,30 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 
 
 
-# Admin - Login html
-"""
-class Login(FormView):
-    template_name = "login.html"
-    form_class = AuthenticationForm
-    success_url = reverse_lazy('list')
 
-    @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
+# Admin - Login Json 
+"""
+class LoginAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return HttpResponseRedirect(self.get_success_url())
+            return HttpResponseRedirect('/api1/list/')
         else:
-            return super(Login, self).dispatch(request, *args, **kwargs)
+            return super(LoginAPIView, self).dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        password = request.data.get('password')
 
+        user = authenticate(username=username, password=password)
         if user:
+            login(request, user)
             token, _ = Token.objects.get_or_create(user=user)
-            self.request.auth = token
-            login(self.request, user)
-            return super(Login, self).form_valid(form)
- """           
+            request.auth = token
+            return HttpResponseRedirect('/api1/list/')
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+"""
 
 """
 # Admin - Login Json
@@ -96,28 +118,31 @@ class LoginAPIView(APIView):
             return redirect('list')
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 """
-
-# Admin - Login Json
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return HttpResponseRedirect('/api1/list/')
-        else:
-            return super(LoginAPIView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
 
         user = authenticate(username=username, password=password)
+
         if user:
             login(request, user)
             token, _ = Token.objects.get_or_create(user=user)
-            request.auth = token
-            return HttpResponseRedirect('/api1/list/')
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            return Response({
+                'success': True,
+                'message': 'Login successful',
+                'token': token.key,
+                'user_id': user.id,
+                'username': user.username,
+            })
+        else:
+            return Response({
+                'success': False,
+                'message': 'Invalid credentials'
+            }, status=status.HTTP_401_UNAUTHORIZED)
 
 
 # Admin - Logout
@@ -130,7 +155,7 @@ class Logout(APIView):
 
 # Admin - Create Users
 class CreateUserViewSet(viewsets.ModelViewSet):
-    queryset = AdminUser.objects.all()
+    queryset = Users.objects.all()
     serializer_class = CreateUserSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = [IsAuthenticated]
@@ -141,3 +166,15 @@ class CreateUserViewSet(viewsets.ModelViewSet):
         elif self.action == 'list':
             return [IsAuthenticated()]
         return super().get_permissions()
+    
+"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [AllowAny()]
+        elif self.action == 'list':
+            return [IsAuthenticated()]
+        return super().get_permissions()
+ """
