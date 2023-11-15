@@ -1,6 +1,6 @@
 from .models import AdminUser
-from users_generics.models import CustomUser
-from .serializer import AdminUserSerializer, CustomUserSerializer
+from users_generics.models import CustomUser, Users
+from .serializer import AdminUserSerializer, CustomUserSerializer, CreateUserSerializer
 
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
@@ -20,16 +20,20 @@ from django.views.generic.edit import FormView
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponse
+
+
+
 
 # Admin - Litar
 class UsersList(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = Users.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticated,)
     authentication_class = (TokenAuthentication,)
 
 
-# Admin - Sign in
+# Admin - Sign up
 class AdminUserViewSet(viewsets.ModelViewSet):
     queryset = AdminUser.objects.all()
     serializer_class = AdminUserSerializer
@@ -68,11 +72,41 @@ class Login(FormView):
             self.request.auth = token
             login(self.request, user)
             return super(Login, self).form_valid(form)
+ """           
+
+"""
+# Admin - Login Json
+class LoginAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('list')
+
+    def post(self, request, *args, **kwargs):
+
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            token, _ = Token.objects.get_or_create(user=user)
+            request.auth = token
+            return redirect('list')
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 """
 
 # Admin - Login Json
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect('/api1/list/')
+        else:
+            return super(LoginAPIView, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -82,8 +116,7 @@ class LoginAPIView(APIView):
             login(request, user)
             token, _ = Token.objects.get_or_create(user=user)
             request.auth = token
-
-            return redirect('list')
+            return HttpResponseRedirect('/api1/list/')
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -93,3 +126,18 @@ class Logout(APIView):
         request.user.auth_token.delete()
         logout(request)
         return Response(status = status.HTTP_200_OK)
+    
+
+# Admin - Create Users
+class CreateUserViewSet(viewsets.ModelViewSet):
+    queryset = AdminUser.objects.all()
+    serializer_class = CreateUserSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [AllowAny()]
+        elif self.action == 'list':
+            return [IsAuthenticated()]
+        return super().get_permissions()
