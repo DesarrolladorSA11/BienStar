@@ -11,7 +11,7 @@ class UserClient(models.Model):
     email = models.EmailField()
 
     identification_type = models.CharField(max_length=20)
-    id_rol = models.ForeignKey(Rol, on_delete=models.CASCADE, related_name='users_client_id_rol')
+    #id_rol = models.ForeignKey(Rol, on_delete=models.CASCADE, related_name='users_client_id_rol')
 
     def __str__(self):
         return self.username
