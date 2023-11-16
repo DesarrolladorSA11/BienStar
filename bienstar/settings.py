@@ -16,12 +16,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 # ----------------------------------------<
 import os
 from pathlib import Path
-"""from decouple import config#, Csv
+from dotenv import load_dotenv
+load_dotenv()
 # ---------------------------------------->
 
 
 from datetime import timedelta
-"""
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -116,7 +117,7 @@ WSGI_APPLICATION = 'bienstar.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'BienStar', 
+        'NAME': 'BienStar_Off', 
         'USER': 'postgres',
         'PASSWORD': '1450064',
         'HOST': '127.0.0.1', 

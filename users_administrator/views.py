@@ -34,14 +34,12 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
-        # Personaliza la respuesta JSON según tus necesidades
         response_data = {
             'success': True,
             'message': 'Login successful',
             'token': token.key,
             'user_id': user.id,
             'username': user.username,
-            # Agrega más datos según sea necesario
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
